@@ -10,7 +10,6 @@ main = do
     menuCtrl esc
 
 menuCtrl esc| esc == "1" = do
-                putStrLn "~~Tela de login"
                 login
                 main
             | esc == "2" = do
@@ -20,6 +19,7 @@ menuCtrl esc| esc == "1" = do
             | otherwise = main
 
 login = do
+    putStrLn "\n~~TELA DE LOGIN"
     putStrLn "Login: "
     log <- getLine
     putStrLn "Senha: "
@@ -28,18 +28,21 @@ login = do
     handle <- openFile "cadastro.txt" ReadMode
     contents <- hGetContents handle
     let listAlunos = lines contents
-    let controlador = verif listAlunos logAluno -- add exception
-    if controlador
-        then
+    let ctrl1 = verif (filtroLogUser listAlunos) logAluno -- add exception
+    let ctrl2 = verif (filtroLogCpf listAlunos) logAluno
+    if (ctrl1 || ctrl2)
+        then do
             agendaAluno
             else do
                 --exception
+                putStrLn "\nLogin ou senha invalida!"
                 login
 
 agendaAluno = do -- fazer
-    putStrLn "Voce esta na agenda"
+    putStrLn "\nVOCE ESTA NA AGENDA"
 
 cadastro = do
+    putStrLn "\n~~TELA DE CADASTRO"
     putStrLn "Nome Completo: " -- exception para nome com numeros
     nome <- getLine
     putStrLn "Idade: " -- exception para letra
@@ -61,7 +64,7 @@ cadastro = do
     let ctrl2 = verif (filtro2 listAlunos) usuario -- add exception
     if (ctrl1 || ctrl2)
         then do
-            putStrLn "Usuario ja existe"
+            putStrLn "\nUsuario ja existe"
             main
             else do
                 add ["cadastro.txt", ctrAluno] -- lembrar de fazer as exception
