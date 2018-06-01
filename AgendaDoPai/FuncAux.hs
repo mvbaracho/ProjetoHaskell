@@ -5,9 +5,13 @@ module FuncAux
     , filtro2
     , filtroLogUser
     , filtroLogCpf
+    , vrfNum
+    , validaCpf
+    , vrfNome
     ) where
 
 import Data.List.Split
+import Data.Char
 
 -- Responsavel por escrever no arquivo de acordo com a entrada
 add :: [String] -> IO ()
@@ -42,3 +46,15 @@ find a [] = 0
 find a (b:bs)
            |a == b = 1 + (find a [])
            |otherwise = 1 + find a bs
+
+vrfNum::String -> Bool
+vrfNum input | False `elem` (map (isDigit) input) = False
+             | otherwise = True
+
+validaCpf :: String -> Bool
+validaCpf cpf | (length cpf == 11) && (vrfNum cpf) = True
+              | otherwise = False
+
+vrfNome :: String -> Bool
+vrfNome name | False `elem` (map (isAlpha) name) = False
+             | otherwise = True
