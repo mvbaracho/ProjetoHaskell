@@ -3,23 +3,19 @@ import System.Directory
 import Data.List
 import Data.List.Split
 import FuncAux
---main
+
 main = do
     putStrLn "Seja Bem vindo a Agenda do Estudante: \n 1.Login \n 2.Cadastro \n 3.Sair"
     esc <- getLine
     menuCtrl esc
 
-menuCtrl esc| esc == "1" = do
-                login
-                main
-            | esc == "2" = do
-                cadastro
-                main
-            |esc == "3" = return ()
-            | otherwise = main
+menuCtrl esc |esc == "1" = login
+             |esc == "2" = cadastro
+             |esc == "3" = return ()
+             |otherwise = main
 
 login = do
-    putStrLn "\n~~TELA DE LOGIN"
+    putStrLn "\nTELA DE LOGIN"
     putStrLn "Login: "
     log <- getLine
     putStrLn "Senha: "
@@ -33,16 +29,17 @@ login = do
     if (ctrl1 || ctrl2)
         then do
             agendaAluno
-            else do
-                --exception
-                putStrLn "\nLogin ou senha invalida!"
-                login
+            else do   --exception
+                putStrLn "Login ou senha invalida!"
+                main
+    main
 
 agendaAluno = do -- fazer
     putStrLn "\nVOCE ESTA NA AGENDA"
+    main
 
 cadastro = do
-    putStrLn "\n~~TELA DE CADASTRO"
+    putStrLn "\nTELA DE CADASTRO"
     putStrLn "Nome Completo: " -- exception para nome com numeros
     nome <- getLine
     putStrLn "Idade: " -- exception para letra
@@ -64,8 +61,9 @@ cadastro = do
     let ctrl2 = verif (filtro2 listAlunos) usuario -- add exception
     if (ctrl1 || ctrl2)
         then do
-            putStrLn "\nUsuario ja existe"
+            putStrLn "Usuario ja existe"
             main
             else do
                 add ["cadastro.txt", ctrAluno] -- lembrar de fazer as exception
                 add ["infoAlunos.txt", ifsAluno]
+    main
