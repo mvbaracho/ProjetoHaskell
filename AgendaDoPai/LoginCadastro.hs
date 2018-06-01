@@ -12,7 +12,7 @@ import FuncAux
 import Agenda
 
 login = do
-    putStrLn "\nTELA DE LOGIN"
+    putStrLn "\nTELA DE LOGIN!!"
     putStrLn "Login: "
     log <- getLine
     putStrLn "Senha: "
