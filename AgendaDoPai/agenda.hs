@@ -3,7 +3,7 @@ import System.Directory
 import Data.List
 import Data.List.Split
 import FuncAux
-
+--main
 main = do
     putStrLn "Seja Bem vindo a Agenda do Estudante: \n 1.Login \n 2.Cadastro \n 3.Sair"
     esc <- getLine
