@@ -56,5 +56,7 @@ validaCpf cpf | (length cpf == 11) && (vrfNum cpf) = True
               | otherwise = False
 
 vrfNome :: String -> Bool
-vrfNome name | False `elem` (map (isAlpha) name) = False
-             | otherwise = True
+vrfNome [a] = isAlpha a
+vrfNome (a:as) |a == ' ' = vrfNome as
+               |isAlpha a = vrfNome as
+               |otherwise = False
