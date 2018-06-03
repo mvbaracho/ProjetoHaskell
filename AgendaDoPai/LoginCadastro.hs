@@ -13,7 +13,7 @@ import Agenda
 
 login = do
     putStrLn "\nTELA DE LOGIN"
-    putStrLn "Login: "
+    putStrLn "Nome de usuario ou Cpf: "
     log <- getLine
     putStrLn "Senha: "
     senha <- getLine
@@ -25,6 +25,7 @@ login = do
     let ctrl2 = verif (filtroLogCpf listAlunos) logAluno
     if (ctrl1 || ctrl2)
         then do
+            writeFile "secaoAtual.txt" log
             agendaAluno
             else do   --exception
                 putStrLn "Login ou senha invalida!"
@@ -88,3 +89,4 @@ cadastro = do
                                                                 else do
                                                                     add ["cadastro.txt", ctrAluno] -- lembrar de fazer as exception
                                                                     add ["infoAlunos.txt", ifsAluno]
+                                                                    putStrLn "CADASTRO CONCLUIDO!"

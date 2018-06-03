@@ -8,6 +8,7 @@ module FuncAux
     , vrfNum
     , validaCpf
     , vrfNome
+    , cpfSecaoAtual
     ) where
 
 import Data.List.Split
@@ -60,3 +61,11 @@ vrfNome [a] = isAlpha a
 vrfNome (a:as) |a == ' ' = vrfNome as
                |isAlpha a = vrfNome as
                |otherwise = False
+
+cpfSecaoAtual :: [String] -> String -> String
+cpfSecaoAtual [] _ = error "PROBLEMA EM cpfSecaoAtual ENTRADA VAZIA"
+cpfSecaoAtual (a:as) logInput | user == logInput = cpf
+                              | otherwise = cpfSecaoAtual as logInput
+                            where
+                                cpf = head $ splitOn " " (a)
+                                user = head $ drop 1 (splitOn " " (a))
