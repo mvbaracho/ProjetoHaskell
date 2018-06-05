@@ -3,12 +3,14 @@ module FuncAux
     , verif
     , filtro
     , filtro2
+    , filtro3
     , filtroLogUser
     , filtroLogCpf
     , vrfNum
     , validaCpf
     , vrfNome
     , cpfSecaoAtual
+    , equalsIgn
     ) where
 
 import Data.List.Split
@@ -30,6 +32,11 @@ filtro (a:as) = (head (splitOn " " (a))):filtro as
 filtro2 :: [String] -> [String]
 filtro2 [] = []
 filtro2 (a:as) = (head (drop 1 (splitOn " " (a)))):filtro2 as
+
+filtro3 :: String -> String -> Bool
+filtro3 [] b = False
+filtro3 a b | (head(splitOn "," (a))) == b = True
+            | otherwise = False
 
 filtroLogUser :: [String] -> [String]
 filtroLogUser [] = []
@@ -64,8 +71,25 @@ vrfNome (a:as) |a == ' ' = vrfNome as
 
 cpfSecaoAtual :: [String] -> String -> String
 cpfSecaoAtual [] _ = error "PROBLEMA EM cpfSecaoAtual ENTRADA VAZIA"
-cpfSecaoAtual (a:as) logInput | user == logInput = cpf
+cpfSecaoAtual (a:as) logInput | logInput == cpf = cpf
+                              | user == logInput = cpf
                               | otherwise = cpfSecaoAtual as logInput
                             where
                                 cpf = head $ splitOn " " (a)
                                 user = head $ drop 1 (splitOn " " (a))
+
+equalsIgn :: [Char] -> [Char] -> Bool
+equalsIgn a b = equalsIgnAux (equalsIgnUpper a) (equalsIgnUpper b)
+
+equalsIgnUpper :: [Char] -> [Char]
+equalsIgnUpper [] = []
+equalsIgnUpper (a:as)
+                    | (ord a >= 97 && ord a <= 122) = chr ((ord a)-32):equalsIgnUpper as
+                    | otherwise = a:equalsIgnUpper as
+
+equalsIgnAux :: [Char] -> [Char] -> Bool
+equalsIgnAux [] [] = True
+equalsIgnAux a b | (length a /= length b) = False
+equalsIgnAux (a:as) (b:bs)
+                         | (a == b) = equalsIgnAux as bs
+                         | otherwise = False
