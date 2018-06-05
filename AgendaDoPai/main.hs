@@ -10,15 +10,19 @@ import FuncAux
 import LoginCadastro
 
 main = do
-    putStrLn "Seja Bem vindo a Agenda do Estudante: \n 1.Login \n 2.Cadastro \n 3.Sair"
+    clean
+    putStrLn "Seja Bem vindo a Agenda do Estudante: \n\n 1.Login \n 2.Cadastro \n 3.Sair"
     esc <- getLine
     menuCtrl esc
 
 menuCtrl esc| esc == "1" = do
+                clean
                 login
                 main
             | esc == "2" = do
+                clean
                 cadastro
+                clean
                 main
             |esc == "3" = do
                 return ()

@@ -13,10 +13,9 @@ import System.IO.Error
 import System.Process
 
 
-clean = system "cls"
-
 agendaAluno = do -- fazer
-    putStrLn "\nBem vindo a sua Agenda do Estudante!\nO que voce deseja fazer?"
+    clean
+    putStrLn "\nBem vindo a sua Agenda do Estudante!\n\n O que voce deseja fazer?\n"
     putStrLn "1. Inserir disciplina"
     putStrLn "2. Remover disciplina"
     putStrLn "3. Gerenciar notas"
@@ -37,19 +36,25 @@ opcAgenda esc| esc == "1" = do
                     rmvMat
                     main
              | esc == "3" = do
+                    clean
                     putStrLn "calendario"
                     --insCldr
              | esc == "4" = do
+                    clean
                     putStrLn "informacoes"
                     --verInfos
              | esc == "5" = do
+                    clean
                     main
              | esc == "6" = do
+                    clean
                     main
              | otherwise = do
+                    clean
                     agendaAluno
 
 insMtr = do
+    clean
     handle1 <- openFile "secaoAtual.txt" ReadMode
     contents1 <- hGetContents handle1
     let secao = lines contents1
@@ -65,19 +70,20 @@ insMtr = do
             insMtr
         else do
             add ["infoMaterias.txt", (cpfAtual ++ "," ++ materia)]
-            putStrLn "Adicionar outra materia?\n1. SIM\n2. NAO"
+            putStrLn "\nAdicionar outra materia?\n1. SIM\n2. NAO"
             esc <-getLine
             opcaoMat esc
 
 opcaoMat esc| esc == "1" = insMtr
          | esc == "2" = do
-             putStrLn "Cadastro de materia concluido!\nRetornando ao menu principal!"
+             putStrLn "\nCadastro de materia concluido!\nRetornando ao menu principal!"
              agendaAluno
          | otherwise = do
-             putStrLn "Opcao invalida, retornando para o menu!"
+             putStrLn "\nOpcao invalida, retornando para o menu!"
              agendaAluno
 
 rmvMat = do
+    clean
     handle1 <- openFile "secaoAtual.txt" ReadMode
     contents1 <- hGetContents handle1
     let secao = lines contents1

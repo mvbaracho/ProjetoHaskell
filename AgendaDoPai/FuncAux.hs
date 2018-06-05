@@ -11,10 +11,14 @@ module FuncAux
     , vrfNome
     , cpfSecaoAtual
     , equalsIgn
+    , clean
     ) where
 
 import Data.List.Split
 import Data.Char
+import System.Process
+
+clean = system "cls"
 
 -- Responsavel por escrever no arquivo de acordo com a entrada
 add :: [String] -> IO ()

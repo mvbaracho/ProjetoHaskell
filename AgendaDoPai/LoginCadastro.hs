@@ -12,10 +12,10 @@ import FuncAux
 import Agenda
 
 login = do
-    putStrLn "\nTELA DE LOGIN"
-    putStrLn "Nome de usuario ou Cpf: "
+    putStrLn "TELA DE LOGIN"
+    putStrLn "\nNome de usuario ou Cpf: "
     log <- getLine
-    putStrLn "Senha: "
+    putStrLn "\nSenha: "
     senha <- getLine
     let logAluno = (log ++ " " ++ senha)
     handle <- openFile "cadastro.txt" ReadMode
@@ -28,39 +28,39 @@ login = do
             writeFile "secaoAtual.txt" log
             agendaAluno
             else do   --exception
-                putStrLn "Login ou senha invalida!"
+                putStrLn "\nLogin ou senha invalida!"
 
 cadastro = do
-    putStrLn "\nTELA DE CADASTRO"
-    putStrLn "Nome Completo: " -- exception para nome com numero
+    putStrLn "TELA DE CADASTRO"
+    putStrLn "\nNome Completo: " -- exception para nome com numero
     nome <- getLine
     if ((not $ vrfNome nome) || null nome)
         then do
-            putStrLn "Nome invalido, retornando para a tela de cadastro!"
+            putStrLn "\nNome invalido, retornando para a tela de cadastro!"
             cadastro
         else do
-            putStrLn "Idade: " -- exception para letra
+            putStrLn "\nIdade: " -- exception para letra
             idade <- getLine
             if ((not $ vrfNum idade) || null idade)
                 then do
-                    putStrLn "Idade invalida, retornando para a tela de cadastro!"
+                    putStrLn "\nIdade invalida, retornando para a tela de cadastro!"
                     cadastro
                 else do
-                    putStrLn "Cpf: " -- exception para letra
+                    putStrLn "\nCpf: " -- exception para letra
                     cpf <- getLine
                     if ((not $ validaCpf cpf) || null cpf)
                         then do
-                            putStrLn "Cpf invalido, retornando para a tela de cadastro!"
+                            putStrLn "\nCpf invalido, retornando para a tela de cadastro!"
                             cadastro
                         else do
-                            putStrLn "Curso: "
+                            putStrLn "\nCurso: "
                             curso <- getLine
                             if ((not $ vrfNome curso) || null curso)
                                 then do
-                                    putStrLn "Curso invalido, retornando para a tela de cadastro!"
+                                    putStrLn "\nCurso invalido, retornando para a tela de cadastro!"
                                     cadastro
                                 else do
-                                    putStrLn "Instituicao de ensino: "
+                                    putStrLn "\nInstituicao de ensino: "
                                     inst <- getLine
                                     if ((not $ vrfNome inst) || null inst)
                                         then do
