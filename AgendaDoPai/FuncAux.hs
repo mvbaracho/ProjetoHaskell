@@ -4,14 +4,20 @@ module FuncAux
     , filtro
     , filtro2
     , filtro3
+    , filtro4
     , filtroLogUser
     , filtroLogCpf
     , vrfNum
     , validaCpf
     , vrfNome
+    , vrfNota
     , cpfSecaoAtual
-    , equalsIgn
+    , elem'
     , clean
+    , insN1
+    , insN2
+    , insNf
+    , getNota
     ) where
 
 import Data.List.Split
@@ -22,7 +28,7 @@ clean = system "cls"
 
 -- Responsavel por escrever no arquivo de acordo com a entrada
 add :: [String] -> IO ()
-add [fileName, todoItem] = appendFile fileName (todoItem ++ "\n")
+add [fileName, item] = appendFile fileName (item ++ "\n")
 
 -- Verifica se uma String é elemento da lista de cadastro
 verif :: [String] -> String -> Bool
@@ -42,6 +48,10 @@ filtro3 [] b = False
 filtro3 a b | (head(splitOn "," (a))) == b = True
             | otherwise = False
 
+filtro4 :: [String] -> [String]
+filtro4 [] = []
+filtro4 (a:as) = (head (drop 1 (splitOn "," (a)))):filtro4 as
+
 filtroLogUser :: [String] -> [String]
 filtroLogUser [] = []
 filtroLogUser (a:as) = (drop (find ' ' a) a):(filtroLogUser as)
@@ -59,7 +69,7 @@ find a (b:bs)
            |a == b = 1 + (find a [])
            |otherwise = 1 + find a bs
 
-vrfNum::String -> Bool
+vrfNum :: String -> Bool
 vrfNum input | False `elem` (map (isDigit) input) = False
              | otherwise = True
 
@@ -82,6 +92,11 @@ cpfSecaoAtual (a:as) logInput | logInput == cpf = cpf
                                 cpf = head $ splitOn " " (a)
                                 user = head $ drop 1 (splitOn " " (a))
 
+elem' :: String -> [String] -> Bool
+elem' _ [] = False
+elem' a (b:bs)| equalsIgn a b = True
+              | otherwise = elem' a bs
+
 equalsIgn :: [Char] -> [Char] -> Bool
 equalsIgn a b = equalsIgnAux (equalsIgnUpper a) (equalsIgnUpper b)
 
@@ -97,3 +112,28 @@ equalsIgnAux a b | (length a /= length b) = False
 equalsIgnAux (a:as) (b:bs)
                          | (a == b) = equalsIgnAux as bs
                          | otherwise = False
+
+vrfNota :: String -> Bool
+vrfNota input | (length [x | x <- input, x == '.']) > 1 = False
+              | otherwise = vrfNum [x | x <- input, x /= '.']
+
+splitIns :: String -> [String]
+splitIns a = (splitOn "," (a))
+
+normaliza :: [String] -> String
+normaliza [] = ""
+normaliza (a:as) | length (a:as) == 1 = a
+                 | otherwise =  a ++ "," ++ normaliza as
+
+insN1 :: String -> String -> String
+insN1 n1 l = normaliza ((take 2 (splitIns l)) ++ [n1]  ++ (drop 3 (splitIns l)))
+
+insN2 :: String -> String -> String
+insN2 n2 l = normaliza ((take 3 (splitIns l)) ++ [n2]  ++ (drop 4 (splitIns l)))
+
+insNf :: String -> String -> String
+insNf nf l = normaliza ((take 4 (splitIns l)) ++ [nf]  ++ (drop 5 (splitIns l)))
+
+getNota :: String -> Int -> String
+getNota [] _ = error "Lista Vazia em GETNOTA"
+getNota input index = head $ drop (1 + index) (splitIns input)
