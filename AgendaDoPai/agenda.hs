@@ -38,6 +38,7 @@ agendaAluno = do -- fazer
             clean
             putStrLn "falta implementar"
             temp <- getLine
+            putStrLn ""
         "5" -> do
             verInf
             agendaAluno
