@@ -30,6 +30,9 @@ login = do
             agendaAluno
             else do   --exception
                 putStrLn "\nLogin e/ou senha inválida!"
+                putStrLn "Pressione qualquer tecla para continuar!"
+                teclatemporaria <- getLine
+                putStrLn ""
 
 cadastro = do
     clean

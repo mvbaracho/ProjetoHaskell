@@ -19,35 +19,30 @@ agendaAluno = do -- fazer
     putStrLn "1. Inserir disciplina"
     putStrLn "2. Remover disciplina"
     putStrLn "3. Gerenciar notas"
-    putStrLn "4. Inserir ou remover atividade no calendário acadêmico"
+    putStrLn "4. Gerenciar atividades no calendário acadêmico"
     putStrLn "5. Ver suas informações"
     putStrLn "6. Logout"
     putStrLn "\nDigite sua opção:"
     esc <- getLine
-    opcAgenda esc
-
-opcAgenda esc| esc == "1" = do
-                    insMtr
-                    agendaAluno
-             | esc == "2" = do
-                    rmvMat
-                    agendaAluno
-             | esc == "3" = do
-                    grcNota
-                    agendaAluno
-             | esc == "4" = do
-                    clean
-                    putStrLn "informacoes"
-                    --verInfos
-             | esc == "5" = do
-                    clean
-                    main
-             | esc == "6" = do
-                    clean
-                    main
-             | otherwise = do
-                    clean
-                    agendaAluno
+    case esc of
+        "1" -> do
+            insMtr
+            agendaAluno
+        "2" -> do
+            rmvMat
+            agendaAluno
+        "3" -> do
+            grcNota
+            agendaAluno
+        "4" -> do
+            clean
+            putStrLn "falta implementar"
+            temp <- getLine
+        "5" -> do
+            verInf
+            agendaAluno
+        "6" -> main
+        otherwise -> agendaAluno
 
 insMtr = do
     clean
@@ -78,6 +73,7 @@ insMtr = do
                     putStrLn "Você já adicionou essa matéria!"
                     putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
                     teclatemporaria <- getLine
+                    hClose handle
                     agendaAluno
                 else do
                     let inputNotas = cpfAtual ++ "," ++ materia ++ "," ++ "[n1]" ++ "," ++ "[n2]" ++ "," ++ "[nf]"
@@ -86,19 +82,18 @@ insMtr = do
                     putStrLn "\nAdicionar outra matéria?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
                     esc <-getLine
-                    opcaoInsMat esc
-
-opcaoInsMat esc| esc == "1" = insMtr
-               | esc == "2" = do
-                   putStrLn "\nCadastro de matérias concluído!"
-                   putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
-                   teclatemporaria <- getLine
-                   agendaAluno
-               | otherwise = do
-                   putStrLn "\nOpção inválida!"
-                   putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
-                   teclatemporaria <- getLine
-                   agendaAluno
+                    case esc of
+                        "1" -> insMtr
+                        "2" -> do
+                            putStrLn "\nCadastro de matérias concluído!"
+                            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                            teclatemporaria <- getLine
+                            agendaAluno
+                        otherwise -> do
+                            putStrLn "\nOpção inválida!"
+                            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                            teclatemporaria <- getLine
+                            agendaAluno
 
 rmvMat = do
     clean
@@ -146,19 +141,18 @@ rmvMat = do
                     putStrLn "Remover outra matéria?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
                     esc <-getLine
-                    opcaoRemMat esc
-
-opcaoRemMat esc| esc == "1" = rmvMat
-               | esc == "2" = do
-                    putStrLn "\nRemoção de matéria concluída!"
-                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
-                    teclatemporaria <- getLine
-                    agendaAluno
-               | otherwise = do
-                     putStrLn "\nOpção inválida!"
-                     putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
-                     teclatemporaria <- getLine
-                     agendaAluno
+                    case esc of
+                        "1" -> rmvMat
+                        "2" -> do
+                             putStrLn "\nRemoção de matéria concluída!"
+                             putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                             teclatemporaria <- getLine
+                             agendaAluno
+                        otherwise -> do
+                              putStrLn "\nOpção inválida!"
+                              putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                              teclatemporaria <- getLine
+                              agendaAluno
 
 grcNota = do
     clean
@@ -168,30 +162,19 @@ grcNota = do
     putStrLn "3. Voltar ao menu inicial"
     putStrLn "\nDigite sua opção:"
     esc <- getLine
-    opcNotas esc
-
-opcNotas esc| esc == "1" = do
-                    insNota
-                    agendaAluno
-             | esc == "2" = do
-                    rmvMat
-                    agendaAluno
-             | esc == "3" = do
-                    putStrLn ""
-                    agendaAluno
-             | esc == "4" = do
-                    clean
-                    putStrLn "informacoes"
-                    --verInfos
-             | esc == "5" = do
-                    clean
-                    main
-             | esc == "6" = do
-                    clean
-                    main
-             | otherwise = do
-                    clean
-                    agendaAluno
+    case esc of
+        "1" -> do
+            insNota
+            agendaAluno
+        "2" -> do
+            rmvMat
+            agendaAluno
+        "3" -> agendaAluno
+        otherwise -> do
+            putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
+            putStrLn "Pressione qualquer tecla para continuar!"
+            teclatemporaria <- getLine
+            grcNota
 
 insNota = do
     clean
@@ -246,29 +229,30 @@ insNota = do
                     putStrLn "3. Proval Final"
                     putStrLn "4. Voltar ao Gerenciamento de Notas"
                     esc <- getLine
-                    opcInsNts esc materiaPos
-
-opcInsNts :: String -> String -> IO ()
-opcInsNts esc input | esc == "1" = do
-                        clean
-                        addNota1 input
-                        insNota
-                    | esc == "2" = do
-                        clean
-                        addNota2 input
-                        insNota
-                    | esc == "3" = do
-                        clean
-                        addFinal input
-                        insNota
-                    | esc == "4" = do
-                        clean
-                        grcNota
-                    | otherwise = do
-                        putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                        putStrLn "Pressione qualquer tecla para continuar!"
-                        teclatemporaria <- getLine
-                        grcNota
+                    case esc of
+                        "1" -> do
+                            clean
+                            addNota1 materiaPos
+                            insNota
+                        "2" -> do
+                            clean
+                            addNota2 materiaPos
+                            insNota
+                        "3" -> do
+                            clean
+                            addFinal materiaPos
+                            insNota
+                        "4" -> do
+                            clean
+                            grcNota
+                        "5" -> do
+                            verInf
+                            agendaAluno
+                        otherwise -> do
+                            putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
+                            putStrLn "Pressione qualquer tecla para continuar!"
+                            teclatemporaria <- getLine
+                            grcNota
 
 addNota1 :: String -> IO ()
 addNota1 input = do
@@ -302,22 +286,20 @@ addNota1 input = do
                     putStrLn "Deseja adicionar a nota do Segundo Exercício Escolar?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
                     esc <-getLine
-                    if esc == "1"
-                        then do
+                    case esc of
+                        "1" -> do
                             clean
                             addNota2 newNota1
-                        else do
-                            if esc == "2"
-                                then do
-                                    putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
-                                    teclatemporaria <- getLine
-                                    grcNota
-                                else do
-                                    putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
-                                    teclatemporaria <- getLine
-                                    grcNota
+                        "2" -> do
+                            putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
+                            putStrLn "Pressione qualquer tecla para continuar!"
+                            teclatemporaria <- getLine
+                            grcNota
+                        otherwise -> do
+                            putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
+                            putStrLn "Pressione qualquer tecla para continuar!"
+                            teclatemporaria <- getLine
+                            grcNota
 
 addNota2 :: String -> IO ()
 addNota2 input = do
@@ -326,6 +308,7 @@ addNota2 input = do
     (tempName, tempHandle) <- openTempFile tempdir "temp"
     contents <- hGetContents handle
     let matLista = lines contents
+    let nota1 = getNota input 1
     let nota2 = getNota input 2
     let newTodoItems = [x | x <- matLista, x /= input]
     hPutStr tempHandle $ unlines newTodoItems
@@ -334,47 +317,54 @@ addNota2 input = do
     removeFile "infoNotas.txt"
     renameFile tempName "infoNotas.txt"
 
-    if (nota2 /= "[n2]")
+    if (nota1 == "[n1]")
         then do
-            putStrLn "AVISO:\nVocê já tem uma nota cadastrada nessa categoria, caso não deseje altera-la, apenas tecle ENTER!"
-            putStrLn "Caso contrário, digite o novo valor da nota!"
-        else do
-            putStrLn "Digite a nota do Segundo Exercício Escolar:"
-    n2 <- getLine
-    if null n2
-        then do
-            putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
-            putStrLn "Pressione qualquer tecla para continuar!"
-            teclatemporaria <- getLine
+            putStrLn "Não é possível adicionar a nota do Segundo Exercício Escolar!"
+            putStrLn "A nota do Primeiro Exercício Escolar não foi adicionada!"
             add ["infoNotas.txt", input]
+            putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+            teclatemporaria <- getLine
             grcNota
         else do
-            if ((not $ vrfNota n2) || (read n2 :: Float) < 0 || (read n2 :: Float) > 10)
+            if (nota2 /= "[n2]")
                 then do
-                    putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
+                    putStrLn "AVISO:\nVocê já tem uma nota cadastrada nessa categoria, caso não deseje altera-la, apenas tecle ENTER!"
+                    putStrLn "Caso contrário, digite o novo valor da nota!"
+                else do
+                    putStrLn "Digite a nota do Segundo Exercício Escolar:"
+            n2 <- getLine
+            if null n2
+                then do
+                    putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
                     putStrLn "Pressione qualquer tecla para continuar!"
                     teclatemporaria <- getLine
                     add ["infoNotas.txt", input]
-                    insNota
+                    grcNota
                 else do
-                    let newNota2 = insN2 n2 input
-                    add ["infoNotas.txt", newNota2]
-                    putStrLn "Nota atualizada com sucesso!"
-                    putStrLn "Deseja adicionar a nota da Prova final?\n1. SIM\n2. NÃO"
-                    putStrLn "\nDigite sua opção:"
-                    esc <-getLine
-                    if esc == "1"
+                    if ((not $ vrfNota n2) || (read n2 :: Float) < 0 || (read n2 :: Float) > 10)
                         then do
-                            clean
-                            addFinal newNota2
+                            putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
+                            putStrLn "Pressione qualquer tecla para continuar!"
+                            teclatemporaria <- getLine
+                            add ["infoNotas.txt", input]
+                            insNota
                         else do
-                            if esc == "2"
-                                then do
+                            let newNota2 = insN2 n2 input
+                            add ["infoNotas.txt", newNota2]
+                            putStrLn "Nota atualizada com sucesso!"
+                            putStrLn "Deseja adicionar a nota da Prova final?\n1. SIM\n2. NÃO"
+                            putStrLn "\nDigite sua opção:"
+                            esc <-getLine
+                            case esc of
+                                "1" -> do
+                                    clean
+                                    addFinal newNota2
+                                "2" -> do
                                     putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
                                     putStrLn "Pressione qualquer tecla para continuar!"
                                     teclatemporaria <- getLine
                                     grcNota
-                                else do
+                                otherwise -> do
                                     putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
                                     putStrLn "Pressione qualquer tecla para continuar!"
                                     teclatemporaria <- getLine
@@ -406,45 +396,97 @@ addFinal input = do
             grcNota
         else do
             let media = ((read nota1 :: Float) + (read nota2 :: Float))/2
-            if media > 7
+            if media < 3
                 then do
-                    putStrLn "Não é possível adicionar uma nota final, sua média está acima de 7(sete)!"
+                    putStrLn "Não é possível adicionar uma nota final, sua média está abaixo de 3 (três)!"
                     add ["infoNotas.txt", input]
                     putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
                     teclatemporaria <- getLine
                     grcNota
                 else do
-                    if (notaFinal /= "[nf]")
+                    if media > 7
                         then do
-                            putStrLn "AVISO:\nVocê já tem uma nota cadastrada nessa categoria, caso não deseje altera-la, apenas tecle ENTER!"
-                            putStrLn "Caso contrário, digite o novo valor da nota!"
+                            putStrLn "Não é possível adicionar uma nota final, sua média está acima de 7 (sete)!"
+                            add ["infoNotas.txt", input]
+                            putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+                            teclatemporaria <- getLine
+                            grcNota
                         else do
-                            putStrLn "Digite a nota da Prova Final:"
-                            nf <- getLine
-                            if null nf
+                            if (notaFinal /= "[nf]")
                                 then do
-                                    putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
-                                    teclatemporaria <- getLine
-                                    add ["infoNotas.txt", input]
-                                    grcNota
+                                    putStrLn "AVISO:\nVocê já tem uma nota cadastrada nessa categoria, caso não deseje altera-la, apenas tecle ENTER!"
+                                    putStrLn "Caso contrário, digite o novo valor da nota!"
                                 else do
-                                    if ((not $ vrfNota nf) || (read nf :: Float) < 0 || (read nf :: Float) > 10)
+                                    putStrLn "Digite a nota da Prova Final:"
+                                    nf <- getLine
+                                    if null nf
                                         then do
-                                            putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
+                                            putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
                                             putStrLn "Pressione qualquer tecla para continuar!"
                                             teclatemporaria <- getLine
                                             add ["infoNotas.txt", input]
-                                            insNota
-                                        else do
-                                            let newNotaF = insNf nf input
-                                            add ["infoNotas.txt", newNotaF]
-                                            putStrLn "Nota atualizada com sucesso!"
-                                            putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
-                                            putStrLn "Pressione qualquer tecla para continuar!"
-                                            teclatemporaria <- getLine
                                             grcNota
+                                        else do
+                                            if ((not $ vrfNota nf) || (read nf :: Float) < 0 || (read nf :: Float) > 10)
+                                                then do
+                                                    putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
+                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                    teclatemporaria <- getLine
+                                                    add ["infoNotas.txt", input]
+                                                    insNota
+                                                else do
+                                                    let newNotaF = insNf nf input
+                                                    add ["infoNotas.txt", newNotaF]
+                                                    putStrLn "Nota atualizada com sucesso!"
+                                                    putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
+                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                    teclatemporaria <- getLine
+                                                    grcNota
 
+verInf = do
+        clean
+        handle1 <- openFile "secaoAtual.txt" ReadMode
+        contents1 <- hGetContents handle1
+        let secao = lines contents1
+        handle2 <- openFile "cadastro.txt" ReadMode
+        contents2 <- hGetContents handle2
+        let cdstr = lines contents2
+        let cpfAtual = cpfSecaoAtual cdstr (head secao)
+
+        handle3 <- openFile "infoAlunos.txt" ReadMode
+        tempdir <- getTemporaryDirectory
+        (tempName, tempHandle) <- openTempFile tempdir "temp"
+        contents <- hGetContents handle3
+        let infLista = lines contents
+        let infListaAux = [elemLista |elemLista <- infLista]
+        let infListaNormalizada = splitOn "," (head infListaAux)
+        let infListaInter =  zipWith (++) ["Nome: ","Cpf: ","Idade: ", "Curso: ", "Instituição: "] infListaNormalizada
+
+        putStrLn "    Informações\n"
+        putStr $ unlines infListaInter
+        putStrLn "\n"
+
+        handle <- openFile "infoMaterias.txt" ReadMode
+        contents <- hGetContents handle
+        let matLista = lines contents
+        let matListaUser = [elemLista |elemLista <- matLista, filtro3 elemLista cpfAtual]
+        let matListaOthers = [elemListaO |elemListaO <- matLista, not $ filtro3 elemListaO cpfAtual]
+            matNumeradas = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ filtro4 matListaUser
+
+        putStrLn "  Materias Cadastradas\n"
+        if(length matNumeradas == 0)
+            then do
+                putStrLn "Você não tem materias cadastradas!"
+            else do
+                putStr $ unlines matNumeradas
+
+        hClose handle1
+        hClose handle2
+        hClose handle3
+
+        putStrLn "\nPressione qualquer tecla para retorna a agenda!"
+        teclatemporaria <- getLine
+        putStrLn ""
 
 
 
