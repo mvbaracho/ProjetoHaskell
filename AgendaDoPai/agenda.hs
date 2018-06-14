@@ -21,8 +21,7 @@ agendaAluno = do -- fazer
     putStrLn "3. Gerenciar notas"
     putStrLn "4. Gerenciar atividades no calendário acadêmico"
     putStrLn "5. Ver suas informações"
-    putStrLn "6. Ver suas Notas"
-    putStrLn "7. Logout"
+    putStrLn "6. Logout"
     putStrLn "\nDigite sua opção:"
     esc <- getLine
     case esc of
@@ -43,10 +42,7 @@ agendaAluno = do -- fazer
         "5" -> do
             verInf
             agendaAluno
-        "6" -> do
-            verNotas
-            agendaAluno
-        "7" -> main
+        "6" -> main
         otherwise -> agendaAluno
 
 insMtr = do
@@ -172,7 +168,7 @@ grcNota = do
             insNota
             agendaAluno
         "2" -> do
-            rmvMat
+            verNotas
             agendaAluno
         "3" -> agendaAluno
         otherwise -> do
