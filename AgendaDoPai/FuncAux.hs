@@ -147,29 +147,58 @@ getNota :: String -> Int -> String
 getNota [] _ = error "Lista Vazia em GETNOTA"
 getNota input index = head $ drop (1 + index) (splitIns input)
 
-auxNota :: String -> String
-auxNota [] = "Ainda nao e possivel calcular a media"
-auxNota s | n1 /= "[n1]"  && n2 /= "[n2]" = show (media)
-          | otherwise = "Ainda nao e possivel calcular a media"
+auxNota :: String -> IO ()
+auxNota [] = putStrLn "Média = Ainda não é possível calcular a média"
+auxNota s | n1 /= "[n1]"  && n2 /= "[n2]" = putStrLn $ "Média = " ++ (show media)
+          | otherwise = putStrLn "Média = Ainda não é possível calcular a média"
           where
             n1 = getNota s 1
             n2 = getNota s 2
             media = ((read n1 :: Float) + (read n2 :: Float))/2
 
-ntsFrmtds :: [String] -> [String]
-ntsFrmtds [] = []
-ntsFrmtds (a:as) | not $ vrfNota $ auxNota a = ("Disciplina: " ++ materia ++ "\n" ++ "Primeiro exercicio escolar = " ++ show n1 ++ "\n" ++ "Segundo exercicio escolar = " ++ show n2 ++ "\n" ++ "Media = " ++ show media ++ "\n" ++ "Situacao: Nao definida\n"):ntsFrmtds as
-                 | (read media :: Float) > 7 = ("Disciplina: " ++ materia ++ "\n" ++ "Primeiro exercicio escolar = " ++ show n1 ++ "\n" ++ "Segundo exercicio escolar = " ++ show n2 ++ "\n" ++ "Media = " ++ show media ++ "\n" ++ "Situacao: Aprovado por media\n"):ntsFrmtds as
-                 | ((read media :: Float) < 7 && (read media :: Float) > 3 && mediaComfinal >5) = ("Disciplina: " ++ materia ++ "\n" ++"Primeiro exercicio escolar = " ++ show n1 ++ "\n" ++ "Segundo exercicio escolar = " ++ show n2 ++  "\n" ++ "Media = " ++ show media ++ "\n" ++"Final = " ++ show final ++ "\n" ++ "Media com Final = " ++ show mediaComfinal ++ "\n" ++ "Situacao: Aprovado\n"):ntsFrmtds as
-                 | otherwise =  ("Disciplina: " ++ materia ++ "\n" ++ "Primeiro exercicio escolar = " ++ show n1 ++ "\n" ++ "Segundo exercicio escolar = " ++ show n2 ++ "\n" ++ "Media = " ++ show media ++ "\n" ++ "Situacao: Reprovado\n"):ntsFrmtds as
+ntsFrmtds :: [String] -> IO ()
+ntsFrmtds [] = putStrLn ""
+ntsFrmtds (a:as) | ((getNota a 1) == "[n1]" || (getNota a 2) == "[n2]")  = do
+                                                                        materia
+                                                                        n1
+                                                                        n2
+                                                                        media
+                                                                        putStrLn "Situação: Não definida\n"
+                                                                        ntsFrmtds as
+                 | mediaFloat > 7 = do
+                                materia
+                                n1
+                                n2
+                                media
+                                putStrLn "Situação: Aprovado por média\n"
+                                ntsFrmtds as
+                 | (mediaFloat < 7 && mediaFloat > 3) = do
+                                                    materia
+                                                    n1
+                                                    n2
+                                                    media
+                                                    finalS
+                                                    ntsFrmtds as
+                 | otherwise = do
+                            materia
+                            n1
+                            n2
+                            media
+                            putStrLn "Situação: Reprovado\n"
+                            ntsFrmtds as
                   where
-                    materia = (head (drop 1 (splitOn "," (a))))
+                    materia = putStrLn $ "Disciplina: " ++ (head (drop 1 (splitOn "," (a))))
+                    mediaFloat = ((read (getNota a 1) :: Float) + (read (getNota a 2) :: Float))/2
                     media = auxNota a
-                    mediaComfinal = ((read media :: Float) + final)/2
+                    mediaComfinal = (mediaFloat + final)/2
                     n1 = case (getNota a 1) of
-                              "[n1]" -> "Nao informada!"
-                              otherwise -> (getNota a 1)
+                              "[n1]" -> putStrLn "Primeiro exercício escolar = Não informada!"
+                              otherwise -> putStrLn $ "Primeiro exercício escolar = " ++ (getNota a 1)
                     n2 = case (getNota a 2) of
-                              "[n2]" -> "Nao informada!"
-                              otherwise -> (getNota a 2)
+                              "[n2]" -> putStrLn "Segundo exercício escolar = Não informada!"
+                              otherwise -> putStrLn $ "Segundo exercício escolar = " ++ (getNota a 2)
+                    finalS = case (getNota a 3) of
+                              "[nf]" -> putStrLn "Prova Final = Não informada!\nSituação = Não difinida!"
+                              otherwise -> do
+                                        putStrLn $ "Prova Final = " ++ (getNota a 3) ++ "\n" ++ "Situação = " ++ (if (((mediaFloat+final)/2) >= 5) then "Aprovado" else "Reprovado")
                     final = read (getNota a 3) :: Float

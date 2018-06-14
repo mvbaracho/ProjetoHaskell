@@ -512,7 +512,7 @@ verNotas = do
               then do
                   putStrLn "Você não tem notas cadastradas!"
               else do
-                  putStr $ unlines (ntsFrmtds notasWithUser)
+                  ntsFrmtds notasWithUser
 
           hClose handle1
           hClose handle2
