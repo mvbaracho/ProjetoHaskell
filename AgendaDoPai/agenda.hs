@@ -21,7 +21,8 @@ agendaAluno = do -- fazer
     putStrLn "3. Gerenciar notas"
     putStrLn "4. Gerenciar atividades no calendário acadêmico"
     putStrLn "5. Ver suas informações"
-    putStrLn "6. Logout"
+    putStrLn "6. Ver suas Notas"
+    putStrLn "7. Logout"
     putStrLn "\nDigite sua opção:"
     esc <- getLine
     case esc of
@@ -42,7 +43,10 @@ agendaAluno = do -- fazer
         "5" -> do
             verInf
             agendaAluno
-        "6" -> main
+        "6" -> do
+            verNotas
+            agendaAluno
+        "7" -> main
         otherwise -> agendaAluno
 
 insMtr = do
@@ -459,7 +463,8 @@ verInf = do
         (tempName, tempHandle) <- openTempFile tempdir "temp"
         contents <- hGetContents handle3
         let infLista = lines contents
-        let infListaAux = [elemLista |elemLista <- infLista]
+        let infLista1 = filtro5 (infLista) (cpfAtual)
+        let infListaAux = [elemLista |elemLista <- infLista1]
         let infListaNormalizada = splitOn "," (head infListaAux)
         let infListaInter =  zipWith (++) ["Nome: ","Cpf: ","Idade: ", "Curso: ", "Instituição: "] infListaNormalizada
 
@@ -471,7 +476,6 @@ verInf = do
         contents <- hGetContents handle
         let matLista = lines contents
         let matListaUser = [elemLista |elemLista <- matLista, filtro3 elemLista cpfAtual]
-        let matListaOthers = [elemListaO |elemListaO <- matLista, not $ filtro3 elemListaO cpfAtual]
             matNumeradas = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ filtro4 matListaUser
 
         putStrLn "  Materias Cadastradas\n"
@@ -488,6 +492,34 @@ verInf = do
         putStrLn "\nPressione qualquer tecla para retorna a agenda!"
         teclatemporaria <- getLine
         putStrLn ""
+
+verNotas = do
+          clean
+          handle1 <- openFile "secaoAtual.txt" ReadMode
+          contents1 <- hGetContents handle1
+          let secao = lines contents1
+          handle2 <- openFile "cadastro.txt" ReadMode
+          contents2 <- hGetContents handle2
+          let cdstr = lines contents2
+          let cpfAtual = cpfSecaoAtual cdstr (head secao)
+          putStrLn "    Notas\n"
+          handle <- openFile "infoNotas.txt" ReadMode
+          contents <- hGetContents handle
+          let notas = lines contents
+          let notasWithUser = [elemLista |elemLista <- notas, filtro3 elemLista cpfAtual]
+              notasN = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ filtro4 notasWithUser
+          if(length notasN == 0)
+              then do
+                  putStrLn "Você não tem notas cadastradas!"
+              else do
+                  putStr $ unlines (ntsFrmtds notasWithUser)
+
+          hClose handle1
+          hClose handle2
+
+          putStrLn "\nPressione qualquer tecla para retorna a agenda!"
+          teclatemporaria <- getLine
+          putStrLn ""
 
 
 
