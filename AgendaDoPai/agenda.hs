@@ -4,10 +4,11 @@ module Agenda
 
 import System.IO
 import System.Directory
+import System.FilePath
 import Data.List
 import Data.List.Split
 import FuncAux
-import {-# SOURCE #-} Main (main)
+import {-# SOURCE #-} MainAluno (mainAluno)
 import System.IO
 import System.IO.Error
 import System.Process
@@ -15,11 +16,11 @@ import System.Process
 
 agendaAluno = do -- fazer
     clean
-    putStrLn "Bem vindo a sua Agenda do Estudante!\n\n O que voce deseja fazer?\n"
+    putStrLn "Bem vindo a sua Agenda do Estudante!\n\nO que voce deseja fazer?\n"
     putStrLn "1. Inserir disciplina"
     putStrLn "2. Remover disciplina"
     putStrLn "3. Gerenciar notas"
-    putStrLn "4. Gerenciar atividades no calendário acadêmico"
+    putStrLn "4. Gerenciar atividades no Calendário do Aluno"
     putStrLn "5. Ver suas informações"
     putStrLn "6. Logout"
     putStrLn "\nDigite sua opção:"
@@ -35,22 +36,154 @@ agendaAluno = do -- fazer
             grcNota
             agendaAluno
         "4" -> do
-            clean
-            putStrLn "falta implementar"
-            temp <- getLine
-            putStrLn ""
+            calendarioAluno
+            agendaAluno
         "5" -> do
             verInf
             agendaAluno
-        "6" -> main
+        "6" -> mainAluno
         otherwise -> agendaAluno
+
+
+calendarioAluno = do
+    clean
+    putStrLn "\tCALENDÁRIO DO ALUNO\n"
+    putStrLn "1. Inserir Atividade"
+    putStrLn "2. Remover Atividade"
+    putStrLn "3. Voltar"
+    putStrLn "\nDigite sua opção:"
+    esc <- getLine
+    case esc of
+        "1" -> do
+            insData
+            agendaAluno
+        "2" -> do
+            removeData
+            agendaAluno
+        "3" -> agendaAluno
+        otherwise -> do
+            clean
+            putStrLn "Opção inválida, retornando para o Calendário do Aluno!"
+            putStrLn "Pressione qualquer tecla para continuar!"
+            teclatemporaria <- getLine
+            calendarioAluno
+
+
+insData = do
+    clean
+    handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
+    contents1 <- hGetContents handle1
+    let secao = lines contents1
+    handle2 <- openFile "Dados\\cadastro.txt" ReadMode
+    contents2 <- hGetContents handle2
+    let cdstr = lines contents2
+    let cpfAtual = cpfSecaoAtual cdstr (head secao)
+
+    putStrLn "\tCALENDÁRIO DO ALUNO\n"
+    putStrLn "Informe a data (digite no modelo dd/mm/aaaa): "
+    dataInf <- getLine
+    if (not $ validaData dataInf)
+        then do
+            putStrLn "\nData Inválida, retornando ao calendário"
+            putStrLn "Pressione qualquer tecla para continuar!"
+            teclatemporaria <- getLine
+            calendarioAluno
+        else do
+            putStrLn "\nDescrição da atividade: "
+            desData <- getLine
+            let dataAtual = cpfAtual ++ "[{(,]})" ++ dataInf ++ "[{(,]})" ++ desData
+            add ["Dados\\calendario.txt", dataAtual]
+            clean
+            putStrLn "\tCALENDÁRIO DO ALUNO\n"
+            putStrLn "\nAdicionar outra Atividade?\n1. SIM\n2. NÃO"
+            putStrLn "\nDigite sua opção:"
+            esc <-getLine
+            case esc of
+                "1" -> insData
+                "2" -> do
+                    clean
+                    putStrLn "\tCALENDÁRIO DO ALUNO\n"
+                    putStrLn "\nInserção de Atividades concluido"
+                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                    teclatemporaria <- getLine
+                    agendaAluno
+                otherwise -> do
+                    clean
+                    putStrLn "\tCALENDÁRIO DO ALUNO\n"
+                    putStrLn "\nOpção inválida!"
+                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                    teclatemporaria <- getLine
+                    agendaAluno
+
+
+removeData = do
+    clean
+    handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
+    contents1 <- hGetContents handle1
+    let secao = lines contents1
+    handle2 <- openFile "Dados\\cadastro.txt" ReadMode
+    contents2 <- hGetContents handle2
+    let cdstr = lines contents2
+    let cpfAtual = cpfSecaoAtual cdstr (head secao)
+
+    handle <- openFile "Dados\\calendario.txt" ReadMode
+    tempdir <- getTemporaryDirectory
+    (tempName, tempHandle) <- openTempFile tempdir "temp"
+    contents <- hGetContents handle
+    let atiData = lines contents
+    let atiAtual = [elemLista |elemLista <- atiData, filtroData elemLista cpfAtual]
+    let atiAtualOthers = [elemListaO |elemListaO <- atiData, not $ filtroData elemListaO cpfAtual]
+        atiNumeradas = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ ordena (filtroData2 atiAtual)
+
+    if (length atiAtual == 0)
+        then do
+            putStrLn "\tCALENDÁRIO DO ALUNO\n"
+            putStrLn "Você não tem Atividades cadastradas no Calendário!\n"
+            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+            teclatemporaria <- getLine
+            agendaAluno
+        else do
+            putStrLn "\tCALENDÁRIO DO ALUNO\n"
+            putStrLn "Essas são as suas Atividades:\n"
+            putStr $ unlines atiNumeradas
+            putStrLn "\nQual delas você deseja remover?"
+            numberString <- getLine
+            if ((not $ vrfNum numberString) || (read numberString) < 0 || (read numberString) > (length atiAtual) - 1)
+                then do
+                    putStrLn "Opção inválida, pressione qualquer tecla para continuar!"
+                    teclatemporaria <- getLine
+                    removeData
+                else do
+                    let number = read numberString
+                        newTodoItems = (delete (atiAtual !! number) atiAtual) ++ atiAtualOthers
+                    hPutStr tempHandle $ unlines newTodoItems
+                    hClose handle
+                    hClose tempHandle
+                    removeFile "Dados\\calendario.txt"
+                    renameFile tempName "Dados\\calendario.txt"
+
+                    putStrLn "Remover outra Atividade?\n1. SIM\n2. NÃO"
+                    putStrLn "\nDigite sua opção:"
+                    esc <-getLine
+                    case esc of
+                        "1" -> removeData
+                        "2" -> do
+                            putStrLn "\nRemoção de Atividades concluída!"
+                            putStrLn "Pressione qualquer tecla para retornar ao Calendario do Aluno!"
+                            teclatemporaria <- getLine
+                            calendarioAluno
+                        otherwise -> do
+                            putStrLn "\nOpção inválida!"
+                            putStrLn "Pressione qualquer tecla para retornar ao Calendario do Aluno!"
+                            teclatemporaria <- getLine
+                            calendarioAluno
 
 insMtr = do
     clean
-    handle1 <- openFile "secaoAtual.txt" ReadMode
+    handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
     contents1 <- hGetContents handle1
     let secao = lines contents1
-    handle2 <- openFile "cadastro.txt" ReadMode
+    handle2 <- openFile "Dados\\cadastro.txt" ReadMode
     contents2 <- hGetContents handle2
     let cdstr = lines contents2
     let cpfAtual = cpfSecaoAtual cdstr (head secao)
@@ -66,7 +199,7 @@ insMtr = do
             insMtr
         else do
             let inputMateria = cpfAtual ++ "," ++ materia
-            handle <- openFile "infoMaterias.txt" ReadMode
+            handle <- openFile "Dados\\infoMaterias.txt" ReadMode
             contents <- hGetContents handle
             let materias = lines contents
             if (inputMateria `elem'` materias)
@@ -78,8 +211,8 @@ insMtr = do
                     agendaAluno
                 else do
                     let inputNotas = cpfAtual ++ "," ++ materia ++ "," ++ "[n1]" ++ "," ++ "[n2]" ++ "," ++ "[nf]"
-                    add ["infoMaterias.txt", inputMateria]
-                    add ["infoNotas.txt", inputNotas]
+                    add ["Dados\\infoMaterias.txt", inputMateria]
+                    add ["Dados\\infoNotas.txt", inputNotas]
                     putStrLn "\nAdicionar outra matéria?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
                     esc <-getLine
@@ -98,15 +231,15 @@ insMtr = do
 
 rmvMat = do
     clean
-    handle1 <- openFile "secaoAtual.txt" ReadMode
+    handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
     contents1 <- hGetContents handle1
     let secao = lines contents1
-    handle2 <- openFile "cadastro.txt" ReadMode
+    handle2 <- openFile "Dados\\cadastro.txt" ReadMode
     contents2 <- hGetContents handle2
     let cdstr = lines contents2
     let cpfAtual = cpfSecaoAtual cdstr (head secao)
 
-    handle <- openFile "infoMaterias.txt" ReadMode
+    handle <- openFile "Dados\\infoMaterias.txt" ReadMode
     tempdir <- getTemporaryDirectory
     (tempName, tempHandle) <- openTempFile tempdir "temp"
     contents <- hGetContents handle
@@ -136,8 +269,8 @@ rmvMat = do
                     hPutStr tempHandle $ unlines newTodoItems
                     hClose handle
                     hClose tempHandle
-                    removeFile "infoMaterias.txt"
-                    renameFile tempName "infoMaterias.txt"
+                    removeFile "Dados\\infoMaterias.txt"
+                    renameFile tempName "Dados\\infoMaterias.txt"
 
                     putStrLn "Remover outra matéria?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
@@ -179,15 +312,15 @@ grcNota = do
 
 insNota = do
     clean
-    handle1 <- openFile "secaoAtual.txt" ReadMode
+    handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
     contents1 <- hGetContents handle1
     let secao = lines contents1
-    handle2 <- openFile "cadastro.txt" ReadMode
+    handle2 <- openFile "Dados\\cadastro.txt" ReadMode
     contents2 <- hGetContents handle2
     let cdstr = lines contents2
     let cpfAtual = cpfSecaoAtual cdstr (head secao)
 
-    handle <- openFile "infoNotas.txt" ReadMode
+    handle <- openFile "Dados\\infoNotas.txt" ReadMode
     tempdir <- getTemporaryDirectory
     (tempName, tempHandle) <- openTempFile tempdir "temp"
     contents <- hGetContents handle
@@ -220,8 +353,8 @@ insNota = do
                     hPutStr tempHandle $ unlines newTodoItems
                     hClose handle
                     hClose tempHandle
-                    removeFile "infoNotas.txt"
-                    renameFile tempName "infoNotas.txt"
+                    removeFile "Dados\\infoNotas.txt"
+                    renameFile tempName "Dados\\infoNotas.txt"
 
                     putStrLn "INSERÇÃO DE NOTAS"
                     putStrLn "\nQual nota você deseja adicionar?"
@@ -270,7 +403,7 @@ addNota1 input = do
             putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
             putStrLn "Pressione qualquer tecla para continuar!"
             teclatemporaria <- getLine
-            add ["infoNotas.txt", input]
+            add ["Dados\\infoNotas.txt", input]
             grcNota
         else do
             if ((not $ vrfNota n1) || (read n1 :: Float) < 0 || (read n1 :: Float) > 10)
@@ -278,11 +411,11 @@ addNota1 input = do
                     putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
                     putStrLn "Pressione qualquer tecla para continuar!"
                     teclatemporaria <- getLine
-                    add ["infoNotas.txt", input]
+                    add ["Dados\\infoNotas.txt", input]
                     insNota
                 else do
                     let newNota1 = insN1 n1 input
-                    add ["infoNotas.txt", newNota1]
+                    add ["Dados\\infoNotas.txt", newNota1]
                     putStrLn "Nota atualizada com sucesso!"
                     putStrLn "Deseja adicionar a nota do Segundo Exercício Escolar?\n1. SIM\n2. NÃO"
                     putStrLn "\nDigite sua opção:"
@@ -304,7 +437,7 @@ addNota1 input = do
 
 addNota2 :: String -> IO ()
 addNota2 input = do
-    handle <- openFile "infoNotas.txt" ReadMode
+    handle <- openFile "Dados\\infoNotas.txt" ReadMode
     tempdir <- getTemporaryDirectory
     (tempName, tempHandle) <- openTempFile tempdir "temp"
     contents <- hGetContents handle
@@ -315,14 +448,14 @@ addNota2 input = do
     hPutStr tempHandle $ unlines newTodoItems
     hClose handle
     hClose tempHandle
-    removeFile "infoNotas.txt"
-    renameFile tempName "infoNotas.txt"
+    removeFile "Dados\\infoNotas.txt"
+    renameFile tempName "Dados\\infoNotas.txt"
 
     if (nota1 == "[n1]")
         then do
             putStrLn "Não é possível adicionar a nota do Segundo Exercício Escolar!"
             putStrLn "A nota do Primeiro Exercício Escolar não foi adicionada!"
-            add ["infoNotas.txt", input]
+            add ["Dados\\infoNotas.txt", input]
             putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
             teclatemporaria <- getLine
             grcNota
@@ -339,7 +472,7 @@ addNota2 input = do
                     putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
                     putStrLn "Pressione qualquer tecla para continuar!"
                     teclatemporaria <- getLine
-                    add ["infoNotas.txt", input]
+                    add ["Dados\\infoNotas.txt", input]
                     grcNota
                 else do
                     if ((not $ vrfNota n2) || (read n2 :: Float) < 0 || (read n2 :: Float) > 10)
@@ -347,11 +480,11 @@ addNota2 input = do
                             putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
                             putStrLn "Pressione qualquer tecla para continuar!"
                             teclatemporaria <- getLine
-                            add ["infoNotas.txt", input]
+                            add ["Dados\\infoNotas.txt", input]
                             insNota
                         else do
                             let newNota2 = insN2 n2 input
-                            add ["infoNotas.txt", newNota2]
+                            add ["Dados\\infoNotas.txt", newNota2]
                             putStrLn "Nota atualizada com sucesso!"
                             putStrLn "Deseja adicionar a nota da Prova final?\n1. SIM\n2. NÃO"
                             putStrLn "\nDigite sua opção:"
@@ -373,7 +506,7 @@ addNota2 input = do
 
 addFinal :: String -> IO ()
 addFinal input = do
-    handle <- openFile "infoNotas.txt" ReadMode
+    handle <- openFile "Dados\\infoNotas.txt" ReadMode
     tempdir <- getTemporaryDirectory
     (tempName, tempHandle) <- openTempFile tempdir "temp"
     contents <- hGetContents handle
@@ -383,15 +516,15 @@ addFinal input = do
     hPutStr tempHandle $ unlines newTodoItems
     hClose handle
     hClose tempHandle
-    removeFile "infoNotas.txt"
-    renameFile tempName "infoNotas.txt"
+    removeFile "Dados\\infoNotas.txt"
+    renameFile tempName "Dados\\infoNotas.txt"
     let nota1 = getNota input 1
     let nota2 = getNota input 2
 
     if (nota1 == "[n1]" || nota2 == "[n2]")
         then do
             putStrLn "Não é possível adicionar uma nota final, as notas anteriores não foram adicionadas por completo!"
-            add ["infoNotas.txt", input]
+            add ["Dados\\infoNotas.txt", input]
             putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
             teclatemporaria <- getLine
             grcNota
@@ -400,7 +533,7 @@ addFinal input = do
             if media < 3
                 then do
                     putStrLn "Não é possível adicionar uma nota final, sua média está abaixo de 3 (três)!"
-                    add ["infoNotas.txt", input]
+                    add ["Dados\\infoNotas.txt", input]
                     putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
                     teclatemporaria <- getLine
                     grcNota
@@ -408,7 +541,7 @@ addFinal input = do
                     if media > 7
                         then do
                             putStrLn "Não é possível adicionar uma nota final, sua média está acima de 7 (sete)!"
-                            add ["infoNotas.txt", input]
+                            add ["Dados\\infoNotas.txt", input]
                             putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
                             teclatemporaria <- getLine
                             grcNota
@@ -425,7 +558,7 @@ addFinal input = do
                                             putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
                                             putStrLn "Pressione qualquer tecla para continuar!"
                                             teclatemporaria <- getLine
-                                            add ["infoNotas.txt", input]
+                                            add ["Dados\\infoNotas.txt", input]
                                             grcNota
                                         else do
                                             if ((not $ vrfNota nf) || (read nf :: Float) < 0 || (read nf :: Float) > 10)
@@ -433,11 +566,11 @@ addFinal input = do
                                                     putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
                                                     putStrLn "Pressione qualquer tecla para continuar!"
                                                     teclatemporaria <- getLine
-                                                    add ["infoNotas.txt", input]
+                                                    add ["Dados\\infoNotas.txt", input]
                                                     insNota
                                                 else do
                                                     let newNotaF = insNf nf input
-                                                    add ["infoNotas.txt", newNotaF]
+                                                    add ["Dados\\infoNotas.txt", newNotaF]
                                                     putStrLn "Nota atualizada com sucesso!"
                                                     putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
                                                     putStrLn "Pressione qualquer tecla para continuar!"
@@ -446,15 +579,15 @@ addFinal input = do
 
 verInf = do
         clean
-        handle1 <- openFile "secaoAtual.txt" ReadMode
+        handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
         contents1 <- hGetContents handle1
         let secao = lines contents1
-        handle2 <- openFile "cadastro.txt" ReadMode
+        handle2 <- openFile "Dados\\cadastro.txt" ReadMode
         contents2 <- hGetContents handle2
         let cdstr = lines contents2
         let cpfAtual = cpfSecaoAtual cdstr (head secao)
 
-        handle3 <- openFile "infoAlunos.txt" ReadMode
+        handle3 <- openFile "Dados\\infoAlunos.txt" ReadMode
         tempdir <- getTemporaryDirectory
         (tempName, tempHandle) <- openTempFile tempdir "temp"
         contents <- hGetContents handle3
@@ -464,17 +597,31 @@ verInf = do
         let infListaNormalizada = splitOn "," (head infListaAux)
         let infListaInter =  zipWith (++) ["Nome: ","Cpf: ","Idade: ", "Curso: ", "Instituição: "] infListaNormalizada
 
-        putStrLn "    Informações\n"
+        putStrLn "\tINFORMAÇÕES\n"
         putStr $ unlines infListaInter
         putStrLn "\n"
 
-        handle <- openFile "infoMaterias.txt" ReadMode
+        handleData <- openFile "Dados\\calendario.txt" ReadMode
+        contentsData <- hGetContents handleData
+        let atiData = lines contentsData
+        let atiAtual = [elemLista |elemLista <- atiData, filtroData elemLista cpfAtual]
+        let atiAtualOthers = [elemListaO |elemListaO <- atiData, not $ filtroData elemListaO cpfAtual]
+            atiNumeradas = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ ordena (filtroData2 atiAtual)
+
+        putStrLn "\tCALENDÁRIO DO ALUNO\n"
+        if(length atiNumeradas == 0)
+            then do
+                putStrLn "Você não tem Atividades cadastradas no Calendário!"
+            else do
+                putStr $ unlines atiNumeradas
+
+        handle <- openFile "Dados\\infoMaterias.txt" ReadMode
         contents <- hGetContents handle
         let matLista = lines contents
         let matListaUser = [elemLista |elemLista <- matLista, filtro3 elemLista cpfAtual]
             matNumeradas = zipWith (\n line -> show n ++ " - " ++ line) [0..] $ filtro4 matListaUser
 
-        putStrLn "  Materias Cadastradas\n"
+        putStrLn "\n\tMATERIAS CADASTRADAS\n"
         if(length matNumeradas == 0)
             then do
                 putStrLn "Você não tem materias cadastradas!"
@@ -491,15 +638,15 @@ verInf = do
 
 verNotas = do
           clean
-          handle1 <- openFile "secaoAtual.txt" ReadMode
+          handle1 <- openFile "Dados\\secaoAtual.txt" ReadMode
           contents1 <- hGetContents handle1
           let secao = lines contents1
-          handle2 <- openFile "cadastro.txt" ReadMode
+          handle2 <- openFile "Dados\\cadastro.txt" ReadMode
           contents2 <- hGetContents handle2
           let cdstr = lines contents2
           let cpfAtual = cpfSecaoAtual cdstr (head secao)
-          putStrLn "    Notas\n"
-          handle <- openFile "infoNotas.txt" ReadMode
+          putStrLn "    NOTAS\n"
+          handle <- openFile "Dados\\infoNotas.txt" ReadMode
           contents <- hGetContents handle
           let notas = lines contents
           let notasWithUser = [elemLista |elemLista <- notas, filtro3 elemLista cpfAtual]

@@ -8,6 +8,9 @@ module FuncAux
     , filtro5
     , filtroLogUser
     , filtroLogCpf
+    , filtroData
+    , filtroData2
+    , validaData
     , vrfNum
     , validaCpf
     , vrfNome
@@ -15,12 +18,16 @@ module FuncAux
     , cpfSecaoAtual
     , elem'
     , clean
+    , equalsIgn
+    , equalsIgnUpper
     , insN1
     , insN2
     , insNf
     , getNota
     , ntsFrmtds
     , auxNota
+    , removeRep
+    , ordena
     ) where
 
 import Data.List.Split
@@ -202,3 +209,61 @@ ntsFrmtds (a:as) | ((getNota a 1) == "[n1]" || (getNota a 2) == "[n2]")  = do
                               otherwise -> do
                                         putStrLn $ "Prova Final = " ++ (getNota a 3) ++ "\n" ++ "Situação = " ++ (if (((mediaFloat+final)/2) >= 5) then "Aprovado" else "Reprovado")
                     final = read (getNota a 3) :: Float
+
+removeRep :: Eq t => [t] -> [t]
+removeRep [] = []
+removeRep [a] = [a]
+removeRep (a:as)
+              |((elem a as) == True) = a:(removeRep [x | x <- as , x /= a])
+              |otherwise = a:(removeRep as)
+
+ordena :: (Ord t) => [t] -> [t]
+ordena [] = []
+ordena (a:as) = ordena ([x | x<-as, x <= a]) ++ [a] ++ ordena [y | y<-as, y > a]
+
+--funções para o calendarioAluno
+ocorrencia :: (Eq t) => [t] -> t -> Int
+ocorrencia [] _ = 0
+ocorrencia (a:as) x
+  | (a == x) = (ocorrencia as x) + 1
+  | otherwise = (ocorrencia as x) + 0
+
+validaData :: String -> Bool
+validaData [] = False
+validaData a | (length a /= 10) = False
+             | ((ocorrencia a '/') /= 2) = False
+             | otherwise = validaDataAux (splitOn "/" (a))
+
+validaDataAux :: [String] -> Bool
+validaDataAux [] = False
+validaDataAux a | (length a /= 3) = False
+                | ((vDia (head a)) && (vMes (head (drop 1 a))) && (vAno (head (drop 2 a)))) = True
+                | otherwise = False
+
+vDia :: String -> Bool
+vDia a | (length a /= 2) = False
+       | ((vrfNum a) && (read a > 0) && (read a <= 31)) = True
+       | otherwise = False
+
+vMes :: String -> Bool
+vMes a | (length a /= 2) = False
+       | ((vrfNum a) && (read a > 0) && (read a <= 12)) = True
+       | otherwise = False
+
+vAno :: String -> Bool
+vAno a | (vrfNum a && (length a == 4) && (read a >= 2018)) = True
+       | otherwise = False
+
+filtroData :: String -> String -> Bool
+filtroData [] b = False
+filtroData a b | (head(splitOn "[{(,]})" (a))) == b = True
+               | otherwise = False
+
+filtroData2 :: [String] -> [String]
+filtroData2 [] = []
+filtroData2 (a:as) = (normalizaData (drop 1 (splitOn "[{(,]})" (a)))):filtroData2 as
+
+normalizaData :: [String] -> String
+normalizaData a = (head a) ++ ": " ++ (head (drop 1 a))
+
+--fim funções calendario

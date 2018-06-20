@@ -1,25 +1,23 @@
-module Main
-    ( main
+module MainAluno
+    ( mainAluno
     ) where
 
 import System.IO
 import System.Directory
-import Data.List
-import Data.List.Split
 import FuncAux
 import Controlador
 
-main = do
+mainAluno = do
     clean
-    putStrLn "Bem vindo à Agenda do Estudante: \n\n 1.Login \n 2.Cadastro \n 3.Sair"
+    putStrLn "Bem vindo à Agenda do Estudante: \n\n 1.Login \n 2.Cadastro \n 3.Voltar"
     putStrLn "\nDigite sua opção:"
     esc <- getLine
     case esc of
         "1" -> do
             control "1"
-            main
+            mainAluno
         "2" -> do
             control "2"
-            main
-        "3" -> control "3"
-        otherwise -> main
+            mainAluno
+        "3" -> control "4"
+        otherwise -> mainAluno
