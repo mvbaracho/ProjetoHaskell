@@ -148,35 +148,41 @@ removeData = do
             putStr $ unlines atiNumeradas
             putStrLn "\nQual delas você deseja remover?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length atiAtual) - 1) || (null numberString))
+            if (null numberString)
                 then do
                     putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     removeData
                 else do
-                    let number = read numberString
-                        newTodoItems = (delete (atiAtual !! number) atiAtual) ++ atiAtualOthers
-                    hPutStr tempHandle $ unlines newTodoItems
-                    hClose handle
-                    hClose tempHandle
-                    removeFile "Dados\\calendario.txt"
-                    renameFile tempName "Dados\\calendario.txt"
+                    if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length atiAtual) - 1))
+                        then do
+                            putStrLn "Opção inválida, pressione ENTER para continuar!"
+                            teclatemporaria <- getLine
+                            removeData
+                        else do
+                            let number = read numberString
+                                newTodoItems = (delete (atiAtual !! number) atiAtual) ++ atiAtualOthers
+                            hPutStr tempHandle $ unlines newTodoItems
+                            hClose handle
+                            hClose tempHandle
+                            removeFile "Dados\\calendario.txt"
+                            renameFile tempName "Dados\\calendario.txt"
 
-                    putStrLn "Remover outra Atividade?\n1. SIM\n2. NÃO"
-                    putStrLn "\nDigite sua opção:"
-                    esc <-getLine
-                    case esc of
-                        "1" -> removeData
-                        "2" -> do
-                            putStrLn "\nRemoção de Atividades concluída!"
-                            putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
-                            teclatemporaria <- getLine
-                            calendarioAluno
-                        otherwise -> do
-                            putStrLn "\nOpção inválida!"
-                            putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
-                            teclatemporaria <- getLine
-                            calendarioAluno
+                            putStrLn "Remover outra Atividade?\n1. SIM\n2. NÃO"
+                            putStrLn "\nDigite sua opção:"
+                            esc <-getLine
+                            case esc of
+                                "1" -> removeData
+                                "2" -> do
+                                    putStrLn "\nRemoção de Atividades concluída!"
+                                    putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
+                                    teclatemporaria <- getLine
+                                    calendarioAluno
+                                otherwise -> do
+                                    putStrLn "\nOpção inválida!"
+                                    putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
+                                    teclatemporaria <- getLine
+                                    calendarioAluno
 
 insMtr = do
     clean
@@ -258,35 +264,41 @@ rmvMat = do
             putStr $ unlines matNumeradas
             putStrLn "Qual delas você deseja remover?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length matListaUser) - 1) || null numberString)
+            if (null numberString)
                 then do
                     putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     rmvMat
                 else do
-                    let number = read numberString
-                        newTodoItems = (delete (matListaUser !! number) matListaUser) ++ matListaOthers
-                    hPutStr tempHandle $ unlines newTodoItems
-                    hClose handle
-                    hClose tempHandle
-                    removeFile "Dados\\infoMaterias.txt"
-                    renameFile tempName "Dados\\infoMaterias.txt"
+                    if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length matListaUser) - 1))
+                        then do
+                            putStrLn "Opção inválida, pressione ENTER para continuar!"
+                            teclatemporaria <- getLine
+                            rmvMat
+                        else do
+                            let number = read numberString
+                                newTodoItems = (delete (matListaUser !! number) matListaUser) ++ matListaOthers
+                            hPutStr tempHandle $ unlines newTodoItems
+                            hClose handle
+                            hClose tempHandle
+                            removeFile "Dados\\infoMaterias.txt"
+                            renameFile tempName "Dados\\infoMaterias.txt"
 
-                    putStrLn "Remover outra matéria?\n1. SIM\n2. NÃO"
-                    putStrLn "\nDigite sua opção:"
-                    esc <-getLine
-                    case esc of
-                        "1" -> rmvMat
-                        "2" -> do
-                             putStrLn "\nRemoção de matéria concluída!"
-                             putStrLn "Pressione ENTER para retornar ao menu principal!"
-                             teclatemporaria <- getLine
-                             agendaAluno
-                        otherwise -> do
-                              putStrLn "\nOpção inválida!"
-                              putStrLn "Pressione ENTER para retornar ao menu principal!"
-                              teclatemporaria <- getLine
-                              agendaAluno
+                            putStrLn "Remover outra matéria?\n1. SIM\n2. NÃO"
+                            putStrLn "\nDigite sua opção:"
+                            esc <-getLine
+                            case esc of
+                                "1" -> rmvMat
+                                "2" -> do
+                                     putStrLn "\nRemoção de matéria concluída!"
+                                     putStrLn "Pressione ENTER para retornar ao menu principal!"
+                                     teclatemporaria <- getLine
+                                     agendaAluno
+                                otherwise -> do
+                                      putStrLn "\nOpção inválida!"
+                                      putStrLn "Pressione ENTER para retornar ao menu principal!"
+                                      teclatemporaria <- getLine
+                                      agendaAluno
 
 grcNota = do
     clean
@@ -340,53 +352,56 @@ insNota = do
             putStr $ unlines matNumeradas
             putStrLn "Qual delas você deseja inserir notas?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || (read numberString) < 0 || ((read numberString) > (length matListaUser) - 1) || null numberString)
+            if (null numberString)
                 then do
                     putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     insNota
                 else do
-                    clean
-                    let number = read numberString
-                        materiaPos = (matListaUser !! number)
-                        newTodoItems = (delete materiaPos matListaUser) ++ matListaOthers
-                    hPutStr tempHandle $ unlines newTodoItems
-                    hClose handle
-                    hClose tempHandle
-                    removeFile "Dados\\infoNotas.txt"
-                    renameFile tempName "Dados\\infoNotas.txt"
-
-                    putStrLn "INSERÇÃO DE NOTAS"
-                    putStrLn "\nQual nota você deseja adicionar?"
-                    putStrLn "1. Primeiro Exercício Escolar"
-                    putStrLn "2. Segundo Exercício Escolar"
-                    putStrLn "3. Proval Final"
-                    putStrLn "4. Voltar ao Gerenciamento de Notas"
-                    esc <- getLine
-                    case esc of
-                        "1" -> do
-                            clean
-                            addNota1 materiaPos
-                            insNota
-                        "2" -> do
-                            clean
-                            addNota2 materiaPos
-                            insNota
-                        "3" -> do
-                            clean
-                            addFinal materiaPos
-                            insNota
-                        "4" -> do
-                            clean
-                            grcNota
-                        "5" -> do
-                            verInf
-                            agendaAluno
-                        otherwise -> do
-                            putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                            putStrLn "Pressione ENTER para continuar!"
+                    if ((not $ vrfNum numberString) || (read numberString) < 0 || ((read numberString) > (length matListaUser) - 1))
+                        then do
+                            putStrLn "Opção inválida, pressione ENTER para continuar!"
                             teclatemporaria <- getLine
-                            grcNota
+                            insNota
+                        else do
+                            clean
+                            let number = read numberString
+                                materiaPos = (matListaUser !! number)
+                                newTodoItems = matListaUser ++ matListaOthers
+                            hPutStr tempHandle $ unlines newTodoItems
+                            hClose handle
+                            hClose tempHandle
+                            removeFile "Dados\\infoNotas.txt"
+                            renameFile tempName "Dados\\infoNotas.txt"
+
+                            putStrLn "INSERÇÃO DE NOTAS"
+                            putStrLn "\nQual nota você deseja adicionar?"
+                            putStrLn "1. Primeiro Exercício Escolar"
+                            putStrLn "2. Segundo Exercício Escolar"
+                            putStrLn "3. Proval Final"
+                            putStrLn "4. Voltar ao Gerenciamento de Notas"
+                            esc <- getLine
+                            case esc of
+                                "1" -> do
+                                    clean
+                                    addNota1 materiaPos
+                                    insNota
+                                "2" -> do
+                                    clean
+                                    addNota2 materiaPos
+                                    insNota
+                                "3" -> do
+                                    clean
+                                    addFinal materiaPos
+                                    insNota
+                                "4" -> do
+                                    clean
+                                    grcNota
+                                otherwise -> do
+                                    putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
+                                    putStrLn "Pressione ENTER para continuar!"
+                                    teclatemporaria <- getLine
+                                    grcNota
 
 addNota1 :: String -> IO ()
 addNota1 input = do
