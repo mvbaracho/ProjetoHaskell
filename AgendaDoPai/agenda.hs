@@ -64,7 +64,7 @@ calendarioAluno = do
         otherwise -> do
             clean
             putStrLn "Opção inválida, retornando para o Calendário do Aluno!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             calendarioAluno
 
@@ -85,7 +85,7 @@ insData = do
     if (not $ validaData dataInf)
         then do
             putStrLn "\nData Inválida, retornando ao calendário"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             calendarioAluno
         else do
@@ -104,14 +104,14 @@ insData = do
                     clean
                     putStrLn "\tCALENDÁRIO DO ALUNO\n"
                     putStrLn "\nInserção de Atividades concluido"
-                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                    putStrLn "Pressione ENTER para retornar ao menu principal!"
                     teclatemporaria <- getLine
                     agendaAluno
                 otherwise -> do
                     clean
                     putStrLn "\tCALENDÁRIO DO ALUNO\n"
                     putStrLn "\nOpção inválida!"
-                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                    putStrLn "Pressione ENTER para retornar ao menu principal!"
                     teclatemporaria <- getLine
                     agendaAluno
 
@@ -139,7 +139,7 @@ removeData = do
         then do
             putStrLn "\tCALENDÁRIO DO ALUNO\n"
             putStrLn "Você não tem Atividades cadastradas no Calendário!\n"
-            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+            putStrLn "Pressione ENTER para retornar ao menu principal!"
             teclatemporaria <- getLine
             agendaAluno
         else do
@@ -148,9 +148,9 @@ removeData = do
             putStr $ unlines atiNumeradas
             putStrLn "\nQual delas você deseja remover?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || (read numberString) < 0 || (read numberString) > (length atiAtual) - 1)
+            if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length atiAtual) - 1) || (null numberString))
                 then do
-                    putStrLn "Opção inválida, pressione qualquer tecla para continuar!"
+                    putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     removeData
                 else do
@@ -169,12 +169,12 @@ removeData = do
                         "1" -> removeData
                         "2" -> do
                             putStrLn "\nRemoção de Atividades concluída!"
-                            putStrLn "Pressione qualquer tecla para retornar ao Calendario do Aluno!"
+                            putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
                             teclatemporaria <- getLine
                             calendarioAluno
                         otherwise -> do
                             putStrLn "\nOpção inválida!"
-                            putStrLn "Pressione qualquer tecla para retornar ao Calendario do Aluno!"
+                            putStrLn "Pressione ENTER para retornar ao Calendario do Aluno!"
                             teclatemporaria <- getLine
                             calendarioAluno
 
@@ -194,7 +194,7 @@ insMtr = do
     if null materia
         then do
             putStrLn "Você precisa digitar o nome da matéria!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             insMtr
         else do
@@ -205,7 +205,7 @@ insMtr = do
             if (inputMateria `elem'` materias)
                 then do
                     putStrLn "Você já adicionou essa matéria!"
-                    putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                    putStrLn "Pressione ENTER para retornar ao menu principal!"
                     teclatemporaria <- getLine
                     hClose handle
                     agendaAluno
@@ -220,12 +220,12 @@ insMtr = do
                         "1" -> insMtr
                         "2" -> do
                             putStrLn "\nCadastro de matérias concluído!"
-                            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                            putStrLn "Pressione ENTER para retornar ao menu principal!"
                             teclatemporaria <- getLine
                             agendaAluno
                         otherwise -> do
                             putStrLn "\nOpção inválida!"
-                            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                            putStrLn "Pressione ENTER para retornar ao menu principal!"
                             teclatemporaria <- getLine
                             agendaAluno
 
@@ -250,7 +250,7 @@ rmvMat = do
     if (length matListaUser == 0)
         then do
             putStrLn "Você não tem matérias cadastradas!"
-            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+            putStrLn "Pressione ENTER para retornar ao menu principal!"
             teclatemporaria <- getLine
             agendaAluno
         else do
@@ -258,9 +258,9 @@ rmvMat = do
             putStr $ unlines matNumeradas
             putStrLn "Qual delas você deseja remover?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || (read numberString) < 0 || (read numberString) > (length matListaUser) - 1)
+            if ((not $ vrfNum numberString) || ((read numberString) < 0) || ((read numberString) > (length matListaUser) - 1) || null numberString)
                 then do
-                    putStrLn "Opção inválida, pressione qualquer tecla para continuar!"
+                    putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     rmvMat
                 else do
@@ -279,12 +279,12 @@ rmvMat = do
                         "1" -> rmvMat
                         "2" -> do
                              putStrLn "\nRemoção de matéria concluída!"
-                             putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                             putStrLn "Pressione ENTER para retornar ao menu principal!"
                              teclatemporaria <- getLine
                              agendaAluno
                         otherwise -> do
                               putStrLn "\nOpção inválida!"
-                              putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+                              putStrLn "Pressione ENTER para retornar ao menu principal!"
                               teclatemporaria <- getLine
                               agendaAluno
 
@@ -306,7 +306,7 @@ grcNota = do
         "3" -> agendaAluno
         otherwise -> do
             putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             grcNota
 
@@ -332,7 +332,7 @@ insNota = do
     if (length matListaUser == 0)
         then do
             putStrLn "Você não tem matérias cadastradas!"
-            putStrLn "Pressione qualquer tecla para retornar ao menu principal!"
+            putStrLn "Pressione ENTER para retornar ao menu principal!"
             teclatemporaria <- getLine
             agendaAluno
         else do
@@ -340,9 +340,9 @@ insNota = do
             putStr $ unlines matNumeradas
             putStrLn "Qual delas você deseja inserir notas?"
             numberString <- getLine
-            if ((not $ vrfNum numberString) || (read numberString) < 0 || (read numberString) > (length matListaUser) - 1)
+            if ((not $ vrfNum numberString) || (read numberString) < 0 || ((read numberString) > (length matListaUser) - 1) || null numberString)
                 then do
-                    putStrLn "Opção inválida, pressione qualquer tecla para continuar!"
+                    putStrLn "Opção inválida, pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     insNota
                 else do
@@ -384,7 +384,7 @@ insNota = do
                             agendaAluno
                         otherwise -> do
                             putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                            putStrLn "Pressione qualquer tecla para continuar!"
+                            putStrLn "Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             grcNota
 
@@ -401,7 +401,7 @@ addNota1 input = do
     if null n1
         then do
             putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             add ["Dados\\infoNotas.txt", input]
             grcNota
@@ -409,7 +409,7 @@ addNota1 input = do
             if ((not $ vrfNota n1) || (read n1 :: Float) < 0 || (read n1 :: Float) > 10)
                 then do
                     putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
-                    putStrLn "Pressione qualquer tecla para continuar!"
+                    putStrLn "Pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     add ["Dados\\infoNotas.txt", input]
                     insNota
@@ -426,12 +426,12 @@ addNota1 input = do
                             addNota2 newNota1
                         "2" -> do
                             putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
-                            putStrLn "Pressione qualquer tecla para continuar!"
+                            putStrLn "Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             grcNota
                         otherwise -> do
                             putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                            putStrLn "Pressione qualquer tecla para continuar!"
+                            putStrLn "Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             grcNota
 
@@ -456,7 +456,7 @@ addNota2 input = do
             putStrLn "Não é possível adicionar a nota do Segundo Exercício Escolar!"
             putStrLn "A nota do Primeiro Exercício Escolar não foi adicionada!"
             add ["Dados\\infoNotas.txt", input]
-            putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+            putStrLn "Retornando para o Gerenciamento de Notas. Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             grcNota
         else do
@@ -470,7 +470,7 @@ addNota2 input = do
             if null n2
                 then do
                     putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
-                    putStrLn "Pressione qualquer tecla para continuar!"
+                    putStrLn "Pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     add ["Dados\\infoNotas.txt", input]
                     grcNota
@@ -478,7 +478,7 @@ addNota2 input = do
                     if ((not $ vrfNota n2) || (read n2 :: Float) < 0 || (read n2 :: Float) > 10)
                         then do
                             putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
-                            putStrLn "Pressione qualquer tecla para continuar!"
+                            putStrLn "Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             add ["Dados\\infoNotas.txt", input]
                             insNota
@@ -495,12 +495,12 @@ addNota2 input = do
                                     addFinal newNota2
                                 "2" -> do
                                     putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                    putStrLn "Pressione ENTER para continuar!"
                                     teclatemporaria <- getLine
                                     grcNota
                                 otherwise -> do
                                     putStrLn "Opção inválida, retornando para o Gerenciamento de Notas!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                    putStrLn "Pressione ENTER para continuar!"
                                     teclatemporaria <- getLine
                                     grcNota
 
@@ -525,7 +525,7 @@ addFinal input = do
         then do
             putStrLn "Não é possível adicionar uma nota final, as notas anteriores não foram adicionadas por completo!"
             add ["Dados\\infoNotas.txt", input]
-            putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+            putStrLn "Retornando para o Gerenciamento de Notas. Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             grcNota
         else do
@@ -534,7 +534,7 @@ addFinal input = do
                 then do
                     putStrLn "Não é possível adicionar uma nota final, sua média está abaixo de 3 (três)!"
                     add ["Dados\\infoNotas.txt", input]
-                    putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+                    putStrLn "Retornando para o Gerenciamento de Notas. Pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     grcNota
                 else do
@@ -542,7 +542,7 @@ addFinal input = do
                         then do
                             putStrLn "Não é possível adicionar uma nota final, sua média está acima de 7 (sete)!"
                             add ["Dados\\infoNotas.txt", input]
-                            putStrLn "Retornando para o Gerenciamento de Notas. Pressione qualquer tecla para continuar!"
+                            putStrLn "Retornando para o Gerenciamento de Notas. Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             grcNota
                         else do
@@ -556,7 +556,7 @@ addFinal input = do
                                     if null nf
                                         then do
                                             putStrLn "Você não adicionou/alterou nenhuma nota, retornando para o Gerenciamento de Notas!"
-                                            putStrLn "Pressione qualquer tecla para continuar!"
+                                            putStrLn "Pressione ENTER para continuar!"
                                             teclatemporaria <- getLine
                                             add ["Dados\\infoNotas.txt", input]
                                             grcNota
@@ -564,7 +564,7 @@ addFinal input = do
                                             if ((not $ vrfNota nf) || (read nf :: Float) < 0 || (read nf :: Float) > 10)
                                                 then do
                                                     putStrLn "Nota no formato inválido, operação cancelada, retornando para Inserção de Notas!"
-                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                    putStrLn "Pressione ENTER para continuar!"
                                                     teclatemporaria <- getLine
                                                     add ["Dados\\infoNotas.txt", input]
                                                     insNota
@@ -573,7 +573,7 @@ addFinal input = do
                                                     add ["Dados\\infoNotas.txt", newNotaF]
                                                     putStrLn "Nota atualizada com sucesso!"
                                                     putStrLn "Operação encerrada, voltando para o Gerenciamento de Notas!"
-                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                    putStrLn "Pressione ENTER para continuar!"
                                                     teclatemporaria <- getLine
                                                     grcNota
 
@@ -632,7 +632,7 @@ verInf = do
         hClose handle2
         hClose handle3
 
-        putStrLn "\nPressione qualquer tecla para retorna a agenda!"
+        putStrLn "\nPressione ENTER para retorna a agenda!"
         teclatemporaria <- getLine
         putStrLn ""
 
@@ -660,13 +660,6 @@ verNotas = do
           hClose handle1
           hClose handle2
 
-          putStrLn "\nPressione qualquer tecla para retorna a agenda!"
+          putStrLn "\nPressione ENTER para retorna a agenda!"
           teclatemporaria <- getLine
           putStrLn ""
-
-
-
---cadastro de periodo (periodo atual, materias com professor, notas com ate 3 entradas)
---adicionar e remover data de prova (e assuntos) ~~ tem parecido no livro
---notas (mostrar materia, professor, notas e media)
---calendario (mostrar data das provas e assuntos)

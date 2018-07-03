@@ -1,3 +1,1 @@
-agostinho,12345678909,20,eng,upe
-diego alves,12411111111,20,comp,upe
-junior k,11551111111,45,direito,catolica
+Agostinho Junior,12345678900,20,Engenharia da Computacao,Poli

@@ -32,7 +32,7 @@ login = do
             agendaAluno
             else do   --exception
                 putStrLn "\nLogin e/ou senha inválida!"
-                putStrLn "Pressione qualquer tecla para continuar!"
+                putStrLn "Pressione ENTER para continuar!"
                 teclatemporaria <- getLine
                 putStrLn ""
 
@@ -44,7 +44,7 @@ cadastro = do
     if ((not $ vrfNome nome) || null nome)
         then do
             putStrLn "\nNome inválido, retornando para o menu!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             mainAluno
         else do
@@ -53,7 +53,7 @@ cadastro = do
             if ((not $ vrfNum idade) || null idade || (read idade)>150)
                 then do
                     putStrLn "\nIdade inválida, retornando para o menu!"
-                    putStrLn "Pressione qualquer tecla para continuar!"
+                    putStrLn "Pressione ENTER para continuar!"
                     teclatemporaria <- getLine
                     mainAluno
                 else do
@@ -62,7 +62,7 @@ cadastro = do
                     if ((not $ validaCpf cpf) || null cpf)
                         then do
                             putStrLn "\nCpf inválido, retornando para o menu!"
-                            putStrLn "Pressione qualquer tecla para continuar!"
+                            putStrLn "Pressione ENTER para continuar!"
                             teclatemporaria <- getLine
                             mainAluno
                         else do
@@ -71,7 +71,7 @@ cadastro = do
                             if ((not $ vrfNome curso) || null curso)
                                 then do
                                     putStrLn "\nCurso inválido, retornando para o menu!"
-                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                    putStrLn "Pressione ENTER para continuar!"
                                     teclatemporaria <- getLine
                                     mainAluno
                                 else do
@@ -80,7 +80,7 @@ cadastro = do
                                     if ((not $ vrfNome inst) || null inst)
                                         then do
                                             putStrLn "Instituição de ensino inválida, retornando para o menu!"
-                                            putStrLn "Pressione qualquer tecla para continuar!"
+                                            putStrLn "Pressione ENTER para continuar!"
                                             teclatemporaria <- getLine
                                             mainAluno
                                         else do
@@ -91,7 +91,7 @@ cadastro = do
                                             if (null usuario || null senha)
                                                 then do
                                                     putStrLn "Nome de usuário ou senha não foi preenchida,\nretornando para o menu!"
-                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                    putStrLn "Pressione ENTER para continuar!"
                                                     teclatemporaria <- getLine
                                                     mainAluno
                                                     else do
@@ -105,12 +105,12 @@ cadastro = do
                                                         if (ctrl1 || ctrl2)
                                                             then do
                                                                 putStrLn "Nome de usuário e/ou cpf já está cadastrado!"
-                                                                putStrLn "Pressione qualquer tecla para continuar!"
+                                                                putStrLn "Pressione ENTER para continuar!"
                                                                 teclatemporaria <- getLine
                                                                 cadastro
                                                                 else do
                                                                     putStrLn "CADASTRO CONCLUÍDO!"
-                                                                    putStrLn "Pressione qualquer tecla para continuar!"
+                                                                    putStrLn "Pressione ENTER para continuar!"
                                                                     teclatemporaria <- getLine
                                                                     add ["Dados\\cadastro.txt", ctrAluno] -- lembrar de fazer as exception
                                                                     add ["Dados\\infoAlunos.txt", ifsAluno]

@@ -10,12 +10,6 @@ import FuncAux
 import {-# SOURCE #-} MainAluno (mainAluno)
 import Data.List.Split
 
-{--
-listar todos alunos por materias
-listar todos alunos cadastrados,numero de alunos cadastrados, media de idade, maior idade, menor de idade
-listar todas instituiçoes de ensino, e seus respectivos alunos
---}
-
 main = do
     clean
     putStrLn "Bem vindo, para continuar, selecione uma opção!"
@@ -44,7 +38,7 @@ admin = do
             menuAdmin
         else do   --exception
             putStrLn "\nLogin e/ou senha inválida!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             main
 
@@ -105,7 +99,7 @@ menuAdmin = do
                     putStrLn "Lista de alunos cadastrados nessa matéria:\n"
                     putStr $ unlines $ listaInfosMat listaInfAlunos listaCpfs
 
-                    putStrLn "Pressione qualquer tecla para continuar!"
+                    putStrLn "Pressione ENTER para continuar!"
                     temp <-getLine
                     menuAdmin
         "3" -> do
@@ -132,7 +126,7 @@ menuAdmin = do
                     putStrLn "Lista de alunos cadastrados nessa instituição de ensino:\n"
                     putStr $ unlines $ listaAlunos
                     hClose handle
-                    putStrLn "Pressione qualquer tecla para continuar!"
+                    putStrLn "Pressione ENTER para continuar!"
                     temp <-getLine
                     menuAdmin
         "4" -> do
@@ -146,12 +140,12 @@ menuAdmin = do
             putStrLn "\nLista completa de alunos cadastrados:\n"
             putStr $ unlines listaCompleta
             hClose handle
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             temp <-getLine
             menuAdmin
         "5" -> do
             putStrLn "\nLogout concluído, retornando para a tela inicial!"
-            putStrLn "Pressione qualquer tecla para continuar!"
+            putStrLn "Pressione ENTER para continuar!"
             teclatemporaria <- getLine
             main
         otherwise -> menuAdmin

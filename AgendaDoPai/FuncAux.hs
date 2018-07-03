@@ -94,6 +94,7 @@ validaCpf cpf | (length cpf == 11) && (vrfNum cpf) = True
               | otherwise = False
 
 vrfNome :: String -> Bool
+vrfNome [] = False
 vrfNome [a] = isAlpha a
 vrfNome (a:as) |a == ' ' = vrfNome as
                |isAlpha a = vrfNome as
